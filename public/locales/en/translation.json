@@ -449,6 +449,7 @@
       "headers": {
         "actions": "Actions",
         "gender": "Gender",
+        "phone": "Phone",
         "role": "Role",
         "status": "Status",
         "user": "User"

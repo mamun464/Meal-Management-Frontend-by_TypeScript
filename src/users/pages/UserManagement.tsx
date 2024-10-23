@@ -30,14 +30,18 @@ const UserManagement = () => {
   const { isUpdating, updateUser } = useUpdateUser();
   const { data } = useUsers();
 
+  // console.log("UserManagement: ", data);
+
+
   const processing = isAdding || isDeleting || isUpdating;
+
 
   const handleAddUser = async (user: Partial<User>) => {
     addUser(user as User)
       .then(() => {
         snackbar.success(
           t("userManagement.notifications.addSuccess", {
-            user: `${user.firstName} ${user.lastName}`,
+            user: `${user.fullName}`,
           })
         );
         setOpenUserDialog(false);
@@ -65,7 +69,7 @@ const UserManagement = () => {
       .then(() => {
         snackbar.success(
           t("userManagement.notifications.updateSuccess", {
-            user: `${user.firstName} ${user.lastName}`,
+            user: `${user.fullName}`,
           })
         );
         setOpenUserDialog(false);
@@ -124,7 +128,8 @@ const UserManagement = () => {
             onDelete={handleOpenConfirmDeleteDialog}
             selected={selected}
           />
-        )}
+        )
+        }
       </AdminAppBar>
       <UserTable
         processing={processing}

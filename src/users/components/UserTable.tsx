@@ -39,7 +39,7 @@ const headCells: HeadCell[] = [
   {
     id: "gender",
     align: "center",
-    label: "userManagement.table.headers.gender",
+    label: "userManagement.table.headers.phone",
   },
   {
     id: "role",
@@ -126,9 +126,15 @@ const UserRow = ({
     setAnchorEl(null);
   };
 
+  const capitalize = (str: string): string => {
+    if (!str) return str; // Return the original string if it's empty or undefined
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  };
+
+
   const handleDelete = () => {
     handleCloseActions();
-    onDelete([user.id]);
+    onDelete([user.id.toString()]);
   };
 
   const handleEdit = () => {
@@ -154,17 +160,24 @@ const UserRow = ({
           inputProps={{
             "aria-labelledby": labelId,
           }}
-          onClick={() => onCheck(user.id)}
+          onClick={() => onCheck(user.id.toString())}
         />
       </TableCell>
       <TableCell>
         <Box sx={{ display: "flex", alignItems: "center" }}>
-          <Avatar sx={{ mr: 3 }}>
-            <PersonIcon />
+          <Avatar sx={{ mr: 3 }} src={user.user_profile_img || undefined}>
+            {!user.user_profile_img && (
+              <Typography variant="body1" sx={{ color: '#D91656' }}>
+                {user.fullName
+                  .split(" ")
+                  .map(name => name.charAt(0).toUpperCase())
+                  .join("")}
+              </Typography>
+            )}
           </Avatar>
           <Box>
             <Typography component="div" variant="h6">
-              {`${user.lastName} ${user.firstName}`}
+              {`${user.fullName}`}
             </Typography>
             <Typography color="textSecondary" variant="body2">
               {user.email}
@@ -172,10 +185,21 @@ const UserRow = ({
           </Box>
         </Box>
       </TableCell>
-      <TableCell align="center">{user.gender}</TableCell>
-      <TableCell align="center">{user.role}</TableCell>
+
+
+      <TableCell align="center">{user.phone_no}</TableCell>
       <TableCell align="center">
-        {user.disabled ? (
+        {user.role === "manager" ? (
+          <Chip
+            label="Manager"
+            style={{ backgroundColor: '#A594F9', color: '#fff' }} // Custom orange background with white text
+          />
+        ) : (
+          capitalize(user.role)
+        )}
+      </TableCell>
+      <TableCell align="center">
+        {!user.is_active ? (
           <Chip label="Disabled" />
         ) : (
           <Chip color="primary" label="Active" />
@@ -307,7 +331,7 @@ const UserTable = ({
                   onDelete={onDelete}
                   onEdit={onEdit}
                   processing={processing}
-                  selected={isSelected(user.id)}
+                  selected={isSelected(user.id.toString())}
                   user={user}
                 />
               ))}

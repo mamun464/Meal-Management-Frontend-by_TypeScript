@@ -55,11 +55,11 @@ const UserDialog = ({
 
   const formik = useFormik({
     initialValues: {
-      disabled: user ? user.disabled : false,
+      is_active: user ? user.is_active : false,
       email: user ? user.email : "",
-      firstName: user ? user.firstName : "",
-      gender: user ? user.gender : "F",
-      lastName: user ? user.lastName : "",
+      fullName: user ? user.fullName : "",
+      // gender: user ? user.gender : "F",
+      // lastName: user ? user.lastName : "",
       role: user ? user.role : "",
     },
     validationSchema: Yup.object({
@@ -96,10 +96,10 @@ const UserDialog = ({
             autoComplete="family-name"
             autoFocus
             disabled={processing}
-            value={formik.values.lastName}
-            onChange={formik.handleChange}
-            error={formik.touched.lastName && Boolean(formik.errors.lastName)}
-            helperText={formik.touched.lastName && formik.errors.lastName}
+          // value={formik.values.lastName}
+          // onChange={formik.handleChange}
+          // error={formik.touched.lastName && Boolean(formik.errors.lastName)}
+          // helperText={formik.touched.lastName && formik.errors.lastName}
           />
           <TextField
             margin="normal"
@@ -110,10 +110,10 @@ const UserDialog = ({
             name="firstName"
             autoComplete="given-name"
             disabled={processing}
-            value={formik.values.firstName}
+            value={formik.values.fullName}
             onChange={formik.handleChange}
-            error={formik.touched.firstName && Boolean(formik.errors.firstName)}
-            helperText={formik.touched.firstName && formik.errors.firstName}
+            error={formik.touched.fullName && Boolean(formik.errors.fullName)}
+            helperText={formik.touched.fullName && formik.errors.fullName}
           />
           <FormControl component="fieldset" margin="normal">
             <FormLabel component="legend">
@@ -123,7 +123,7 @@ const UserDialog = ({
               row
               aria-label="gender"
               name="gender"
-              value={formik.values.gender}
+              // value={formik.values.gender}
               onChange={formik.handleChange}
             >
               {genders.map((gender) => (
@@ -176,7 +176,7 @@ const UserDialog = ({
               name="disabled"
               disabled={processing}
               onChange={formik.handleChange}
-              checked={formik.values.disabled}
+              checked={formik.values.is_active}
               control={<Checkbox />}
               label={t("userManagement.form.disabled.label")}
             />
