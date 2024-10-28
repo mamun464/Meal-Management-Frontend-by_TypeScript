@@ -30,6 +30,7 @@ const UserManagement = () => {
   const { isUpdating, updateUser } = useUpdateUser();
   const { data } = useUsers();
 
+
   // console.log("UserManagement: ", data);
 
 
@@ -65,6 +66,8 @@ const UserManagement = () => {
   };
 
   const handleUpdateUser = async (user: User) => {
+    // console.log("handleUpdateUser:", user);
+
     updateUser(user)
       .then(() => {
         snackbar.success(
@@ -74,8 +77,10 @@ const UserManagement = () => {
         );
         setOpenUserDialog(false);
       })
-      .catch(() => {
-        snackbar.error(t("common.errors.unexpected.subTitle"));
+      .catch((error) => {
+        // Display the specific error message from the thrown error
+        const errorMessage = error instanceof Error ? error.message : t("common.errors.unexpected.subTitle");
+        snackbar.error(errorMessage);
       });
   };
 

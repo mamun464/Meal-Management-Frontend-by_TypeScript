@@ -412,8 +412,8 @@
       "email": {
         "label": "Email Address"
       },
-      "firstName": {
-        "label": "First Name"
+      "name": {
+        "label": "Name"
       },
       "gender": {
         "label": "Gender",
@@ -423,8 +423,8 @@
           "n": "NC"
         }
       },
-      "lastName": {
-        "label": "Last Name"
+      "phone": {
+        "label": "Phone No."
       },
       "role": {
         "label": "Role"

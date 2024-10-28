@@ -21,4 +21,11 @@ export function updateOne<T extends { id: string }>(
   updatedItem: T
 ) {
   return items.map((item) => (item.id === updatedItem.id ? updatedItem : item));
+
+}
+
+export function getAuthToken() {
+  // Retrieve token and check if it exists
+  const token = localStorage.getItem("authkey");
+  return token ? token.replace(/^"(.+)"$/, '$1') : null;
 }
