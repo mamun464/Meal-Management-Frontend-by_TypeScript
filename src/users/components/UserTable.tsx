@@ -69,7 +69,7 @@ function EnhancedTableHead({
   return (
     <TableHead>
       <TableRow sx={{ "& th": { border: 0 } }}>
-        <TableCell sx={{ py: 0 }}>
+        {/* <TableCell sx={{ py: 0 }}>
           <Checkbox
             color="primary"
             indeterminate={numSelected > 0 && numSelected < rowCount}
@@ -79,7 +79,7 @@ function EnhancedTableHead({
               "aria-label": "select all users",
             }}
           />
-        </TableCell>
+        </TableCell> */}
         {headCells.map((headCell) => (
           <TableCell key={headCell.id} align={headCell.align} sx={{ py: 0 }}>
             {t(headCell.label)}
