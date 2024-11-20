@@ -15,6 +15,15 @@ export interface User {
 }
 
 
+export interface New_User {
+  is_active: boolean; // Indicates if the user's account is active
+  email: string; // Email address of the user
+  fullName: string; // Full name of the user
+  phone_no: string; // Phone number of the user
+  role: string; // The role of the user (e.g., "member")
+}
+
+
 
 // export interface User {
 //   id: string;

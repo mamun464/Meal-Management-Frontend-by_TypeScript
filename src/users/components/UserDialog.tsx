@@ -42,14 +42,17 @@ const UserDialog = ({
   user,
 }: UserDialogProps) => {
   const { t } = useTranslation();
-
+  // console.log("come dalogbox");
   const editMode = Boolean(user && user.id);
 
   const handleSubmit = (values: Partial<User>) => {
 
     if (user && user.id) {
+      // console.log("yyyyyyyyyyyyyyyyyyy");
       onUpdate({ ...values, id: user.id } as User);
     } else {
+      // console.log("xxxxxxxxxxxxxxxxx");
+
       onAdd(values);
     }
   };
@@ -64,18 +67,18 @@ const UserDialog = ({
       // lastName: user ? user.lastName : "",
       role: user ? user.role : "",
     },
-    validationSchema: Yup.object({
-      email: Yup.string()
-        .email(t("common.validations.email"))
-        .required(t("common.validations.required")),
-      fullName: Yup.string()
-        .max(20, t("common.validations.max", { size: 20 }))
-        .required(t("common.validations.required")),
-      phone_no: Yup.string()
-        .max(30, t("common.validations.max", { size: 30 }))
-        .required(t("common.validations.required")),
-      role: Yup.string().required(t("common.validations.required")),
-    }),
+    // validationSchema: Yup.object({
+    //   email: Yup.string()
+    //     // .email(t("common.validations.email"))
+    //     .required(t("common.validations.required")),
+    //   fullName: Yup.string()
+    //     .max(20, t("common.validations.max", { size: 20 }))
+    //     .required(t("common.validations.required")),
+    //   phone_no: Yup.string()
+    //     .max(30, t("common.validations.max", { size: 30 }))
+    //     .required(t("common.validations.required")),
+    //   role: Yup.string().required(t("common.validations.required")),
+    // }),
     onSubmit: handleSubmit,
   });
 

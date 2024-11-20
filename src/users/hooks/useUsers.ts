@@ -27,14 +27,14 @@ const fetchUsers = async (token?: string): Promise<User[]> => {
 
   const response_object = await response.json(); // Parse the response JSON
   const user_list = response_object.data
-  console.log("User: ", user_list);
+  // console.log("User: ", user_list);
 
   return user_list;
 };
 
 export function useUsers() {
   const [token] = useLocalStorage<string>("authkey", "");
-  console.log("Token: ", token);
+  // console.log("Token: ", token);
 
   return useQuery("users", () => fetchUsers(token));
 }

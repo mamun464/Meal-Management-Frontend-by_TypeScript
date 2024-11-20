@@ -38,17 +38,22 @@ const UserManagement = () => {
 
 
   const handleAddUser = async (user: Partial<User>) => {
+
     addUser(user as User)
-      .then(() => {
+      .then((new_user) => {
         snackbar.success(
           t("userManagement.notifications.addSuccess", {
-            user: `${user.fullName}`,
+            user: `${new_user.fullName}`,
           })
         );
         setOpenUserDialog(false);
       })
-      .catch(() => {
-        snackbar.error(t("common.errors.unexpected.subTitle"));
+      .catch((error) => {
+        // Check if the error contains a specific message
+        const errorMessage = error.message || t("common.errors.unexpected.subTitle");
+
+        // Show error message using snackbar
+        snackbar.error(errorMessage);
       });
   };
 
@@ -60,8 +65,12 @@ const UserManagement = () => {
         setUserDeleted([]);
         setOpenConfirmDeleteDialog(false);
       })
-      .catch(() => {
-        snackbar.error(t("common.errors.unexpected.subTitle"));
+      .catch((error) => {
+        // Check if the error contains a specific message
+        const errorMessage = error.message || t("common.errors.unexpected.subTitle");
+
+        // Show error message using snackbar
+        snackbar.error(errorMessage);
       });
   };
 
