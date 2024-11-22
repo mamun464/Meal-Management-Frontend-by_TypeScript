@@ -70,7 +70,8 @@ const login = async ({
 
     if (!response.ok) {
       // If response is not ok, log the status
-      throw new Error(`HTTP error! status: ${response.status}`);
+      const errorData = await response.json();
+      throw new Error(errorData.message || `Error: ${response.status}`);
     }
 
     const data: LoginResponse = await response.json();

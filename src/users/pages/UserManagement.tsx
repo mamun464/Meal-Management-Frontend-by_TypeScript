@@ -8,6 +8,7 @@ import ConfirmDialog from "../../core/components/ConfirmDialog";
 import SelectToolbar from "../../core/components/SelectToolbar";
 import { useSnackbar } from "../../core/contexts/SnackbarProvider";
 import UserDialog from "../components/UserDialog";
+import MealDialog from "../components/MealDialog";
 import UserTable from "../components/UserTable";
 import { useAddUser } from "../hooks/useAddUser";
 import { useDeleteUsers } from "../hooks/useDeleteUsers";
@@ -21,6 +22,8 @@ const UserManagement = () => {
 
   const [openConfirmDeleteDialog, setOpenConfirmDeleteDialog] = useState(false);
   const [openUserDialog, setOpenUserDialog] = useState(false);
+  const [editMode, setEditMode] = useState(true);
+  const [openMealDialog, setOpenMealDialog] = useState(false);
   const [selected, setSelected] = useState<string[]>([]);
   const [userDeleted, setUserDeleted] = useState<string[]>([]);
   const [userUpdated, setUserUpdated] = useState<User | undefined>(undefined);
@@ -105,6 +108,11 @@ const UserManagement = () => {
     setUserUpdated(undefined);
     setOpenUserDialog(false);
   };
+  const handleCloseMealDialog = () => {
+    setUserUpdated(undefined);
+    setOpenMealDialog(false);
+    setEditMode(true);
+  };
 
   const handleOpenConfirmDeleteDialog = (userIds: string[]) => {
     setUserDeleted(userIds);
@@ -114,6 +122,11 @@ const UserManagement = () => {
   const handleOpenUserDialog = (user?: User) => {
     setUserUpdated(user);
     setOpenUserDialog(true);
+  };
+  const handleOpenMealDialog = (user?: User) => {
+    setUserUpdated(user);
+    setOpenMealDialog(true);
+    setEditMode(false);
   };
 
   const handleSelectedChange = (newSelected: string[]) => {
@@ -149,6 +162,7 @@ const UserManagement = () => {
         processing={processing}
         onDelete={handleOpenConfirmDeleteDialog}
         onEdit={handleOpenUserDialog}
+        onAddMeal={handleOpenMealDialog}
         onSelectedChange={handleSelectedChange}
         selected={selected}
         users={data}
@@ -171,6 +185,17 @@ const UserManagement = () => {
           user={userUpdated}
         />
       )}
+      {openMealDialog && (
+        <MealDialog
+          editMode={editMode}
+          onClose={handleCloseMealDialog}
+          onUpdate={handleUpdateUser}
+          open={openMealDialog}
+          processing={processing}
+          user={userUpdated}
+        />
+      )}
+
     </React.Fragment>
   );
 };

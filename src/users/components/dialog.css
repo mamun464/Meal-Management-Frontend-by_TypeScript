@@ -1,0 +1,10 @@
+.container {
+    display: flex;
+    gap: 16px;
+    /* Adjust the gap between the input boxes */
+}
+
+.container .input-field {
+    flex: 1;
+    /* Ensure both fields take equal space */
+}

@@ -174,6 +174,7 @@
     "confirmation": "Confirmation",
     "delete": "Delete",
     "edit": "Edit",
+    "addMeal": "Meal Add",
     "errors": {
       "forbidden": {
         "subTitle": "You don't have access to view this page"
@@ -412,6 +413,12 @@
       "email": {
         "label": "Email Address"
       },
+      "lunch": {
+        "label": "Lunch"
+      },
+      "dinner": {
+        "label": "Dinner"
+      },
       "name": {
         "label": "Name"
       },
@@ -435,9 +442,17 @@
         "action": "Add",
         "title": "Add User"
       },
+      "meal_add": {
+        "action": "Enter",
+        "title": "Daily Meal Entry"
+      },
       "edit": {
         "action": "Edit",
         "title": "Edit User"
+      },
+      "meal_edit": {
+        "action": "Update",
+        "title": "User's Meal Update"
       }
     },
     "notifications": {

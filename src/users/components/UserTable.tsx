@@ -23,6 +23,7 @@ import { useTranslation } from "react-i18next";
 import Empty from "../../core/components/Empty";
 import * as selectUtils from "../../core/utils/selectUtils";
 import { User } from "../types/user";
+import { MdFastfood } from "react-icons/md";
 
 interface HeadCell {
   id: string;
@@ -98,6 +99,7 @@ type UserRowProps = {
   onCheck: (id: string) => void;
   onDelete: (userIds: string[]) => void;
   onEdit: (user: User) => void;
+  onAddMeal: (user: User) => void;
   processing: boolean;
   selected: boolean;
   user: User;
@@ -108,6 +110,7 @@ const UserRow = ({
   onCheck,
   onDelete,
   onEdit,
+  onAddMeal,
   processing,
   selected,
   user,
@@ -140,6 +143,10 @@ const UserRow = ({
   const handleEdit = () => {
     handleCloseActions();
     onEdit(user);
+  };
+  const handleAddMeal = () => {
+    handleCloseActions();
+    onAddMeal(user);
   };
 
   return (
@@ -235,6 +242,13 @@ const UserRow = ({
             horizontal: "right",
           }}
         >
+          <MenuItem onClick={handleAddMeal}>
+            <ListItemIcon>
+              <MdFastfood size={22} />
+            </ListItemIcon>{" "}
+            {t("common.addMeal")}
+          </MenuItem>
+
           <MenuItem onClick={handleEdit}>
             <ListItemIcon>
               <EditIcon />
@@ -257,6 +271,7 @@ type UserTableProps = {
   processing: boolean;
   onDelete: (userIds: string[]) => void;
   onEdit: (user: User) => void;
+  onAddMeal: (user: User) => void;
   onSelectedChange: (selected: string[]) => void;
   selected: string[];
   users?: User[];
@@ -265,6 +280,7 @@ type UserTableProps = {
 const UserTable = ({
   onDelete,
   onEdit,
+  onAddMeal,
   onSelectedChange,
   processing,
   selected,
@@ -330,6 +346,7 @@ const UserTable = ({
                   onCheck={handleClick}
                   onDelete={onDelete}
                   onEdit={onEdit}
+                  onAddMeal={onAddMeal}
                   processing={processing}
                   selected={isSelected(user.id.toString())}
                   user={user}
