@@ -17,6 +17,7 @@ import { useTranslation } from "react-i18next";
 import * as Yup from "yup";
 import { User } from "../types/user";
 import './dialog.css'
+import MobileDateTimePicker from "@material-ui/lab/MobileDateTimePicker";
 
 
 
@@ -46,6 +47,7 @@ const MealDialog = ({
     user,
 }: MealDialogProps) => {
     const { t } = useTranslation();
+    // const [startDate, setStartDate] = useState(new Date());
     // console.log("come dalogbox");
     // const editMode = Boolean(user && user.id);
 
@@ -61,13 +63,17 @@ const MealDialog = ({
             // onAdd(values);
         }
     };
+    type ExtendedUser = Partial<User> & {
+        selected_day: Date;
+    };
 
-    const formik = useFormik({
+    const formik = useFormik<ExtendedUser>({
         initialValues: {
             is_active: user ? user.is_active : false,
             email: user ? user.email : "",
             fullName: user ? user.fullName : "",
             phone_no: user ? user.phone_no : "",
+            selected_day: new Date(),
             // gender: user ? user.gender : "F",
             // lastName: user ? user.lastName : "",
             role: user ? user.role : "",
@@ -151,9 +157,24 @@ const MealDialog = ({
                             />
                         </div>
                     </div>
-                    {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <DatePicker label="Date Select" />
-                    </LocalizationProvider>; */}
+                    <MobileDateTimePicker
+                        label={t("calendar.form.selected_day.label")}
+                        inputFormat="dd/MM/yyyy"
+                        value={formik.values.selected_day}
+                        onChange={(date: Date | null) =>
+                            formik.setFieldValue("start", date)
+                        }
+                        renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                id="start"
+                                disabled={processing}
+                                fullWidth
+                                margin="normal"
+                                name="start"
+                            />
+                        )}
+                    />
 
 
                     <FormControl component="fieldset" margin="normal">

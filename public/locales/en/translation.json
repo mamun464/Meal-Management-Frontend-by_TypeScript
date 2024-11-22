@@ -146,6 +146,9 @@
       "start": {
         "label": "Start Date"
       },
+      "selected_day": {
+        "label": "Date"
+      },
       "title": {
         "label": "Title"
       }
