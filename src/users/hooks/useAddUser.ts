@@ -11,8 +11,8 @@ import { getAuthToken } from "../../core/utils/crudUtils";
 const addUser = async (user: User): Promise<User> => {
   const URL = `${process.env.REACT_APP_BACKEND_PUBLIC_URL}/api/user/register/`;
   const key = getAuthToken();
-  console.log("key: ", key);
-  console.log(user);
+  // console.log("key: ", key);
+  // console.log(user);
 
   const response = await fetch(URL, {
     method: 'POST',

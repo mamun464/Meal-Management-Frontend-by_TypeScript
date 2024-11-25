@@ -14,8 +14,8 @@ import { getAuthToken } from "../../core/utils/crudUtils";
 const updateUser = async (user: User): Promise<User> => {
   const URL = `${process.env.REACT_APP_BACKEND_PUBLIC_URL}/api/user/update/?request_user_id=${user.id}`;
   const key = getAuthToken();
-  console.log("key: ", key);
-  console.log(user);
+  // console.log("key: ", key);
+  // console.log(user);
 
   const response = await fetch(URL, {
     method: 'PUT',

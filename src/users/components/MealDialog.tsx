@@ -17,55 +17,83 @@ import { useTranslation } from "react-i18next";
 import * as Yup from "yup";
 import { User } from "../types/user";
 import './dialog.css'
-import MobileDateTimePicker from "@material-ui/lab/MobileDateTimePicker";
+import MobileDatePicker from "@material-ui/lab/MobileDatePicker";
+import { useSnackbar } from "../../core/contexts/SnackbarProvider";
 
 
-
-
-const genders = [
-    { label: "userManagement.form.gender.options.f", value: "F" },
-    { label: "userManagement.form.gender.options.m", value: "M" },
-    { label: "userManagement.form.gender.options.n", value: "NC" },
-];
 const roles = ["Admin", "Member"];
 
 type MealDialogProps = {
     editMode?: boolean;
     onClose: () => void;
-    onUpdate: (user: User) => void;
+    onMealAdd: (body: any) => void;
     open: boolean;
     processing: boolean;
     user?: User;
 };
 
+type ExtendedUser = Partial<User> & {
+    selected_day: Date;
+    lunch: string;
+    dinner: string;
+};
+
 const MealDialog = ({
     editMode,
     onClose,
-    onUpdate,
+    onMealAdd,
     open,
     processing,
     user,
 }: MealDialogProps) => {
     const { t } = useTranslation();
+    const snackbar = useSnackbar();
     // const [startDate, setStartDate] = useState(new Date());
     // console.log("come dalogbox");
     // const editMode = Boolean(user && user.id);
 
-    const handleSubmit = (values: Partial<User>) => {
-        console.log("Editing user: ", editMode);
+    const handleSubmit = (values: ExtendedUser) => {
+        console.log("User ID:", user?.id);
+        const formattedDate = values.selected_day.toISOString().split("T")[0];
+        console.log("fullName:", values.fullName);
+        console.log("Selected Day:", formattedDate);
+        console.log("Lunch:", values.lunch);
+        console.log("Dinner:", values.dinner);
+
+        // Validate each field individually and show specific error messages
+        if (!values.selected_day) {
+            snackbar.error(
+                t("common.validations.field_required", { field_name: t("userManagement.form.selected_day.label") })
+            );
+            return;
+        }
+        if (!values.lunch) {
+            snackbar.error(
+                t("common.validations.field_required", { field_name: t("userManagement.form.lunch.label") })
+            );
+            return;
+        }
+        if (!values.dinner) {
+            snackbar.error(
+                t("common.validations.field_required", { field_name: t("userManagement.form.dinner.label") })
+            );
+            return;
+        }
 
         if (user && user.id) {
-            console.log("yyyyyyyyyyyyyyyyyyy");
-            // onUpdate({ ...values, id: user.id } as User);
-        } else {
-            console.log("xxxxxxxxxxxxxxxxx");
+            onMealAdd({
+                user: user.id,
+                name: values.fullName,
+                date: formattedDate,
+                lunch: values.lunch,
+                dinner: values.dinner
+            })
 
-            // onAdd(values);
+        } else {
+            snackbar.error(t("common.errors.unexpected.subTitle"));
         }
     };
-    type ExtendedUser = Partial<User> & {
-        selected_day: Date;
-    };
+
 
     const formik = useFormik<ExtendedUser>({
         initialValues: {
@@ -74,8 +102,8 @@ const MealDialog = ({
             fullName: user ? user.fullName : "",
             phone_no: user ? user.phone_no : "",
             selected_day: new Date(),
-            // gender: user ? user.gender : "F",
-            // lastName: user ? user.lastName : "",
+            lunch: "", // Default value
+            dinner: "", // Default value
             role: user ? user.role : "",
         },
         // validationSchema: Yup.object({
@@ -120,6 +148,27 @@ const MealDialog = ({
                     // helperText={formik.touched.fullName && formik.errors.fullName}
                     />
 
+                    <MobileDatePicker
+                        label={t("calendar.form.selected_day.label")}
+                        inputFormat="dd/MM/yyyy"
+                        value={formik.values.selected_day}
+                        onChange={(date: Date | null) => {
+                            if (date) {
+                                formik.setFieldValue("selected_day", date); // Update the correct field
+                            }
+                        }}
+                        renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                id="selected_day"
+                                disabled={processing}
+                                fullWidth
+                                margin="normal"
+                                name="selected_day"
+                            />
+                        )}
+                    />
+
                     <div className="container">
                         <div className="input-field">
                             <TextField
@@ -132,12 +181,14 @@ const MealDialog = ({
                                 autoFocus
                                 disabled={processing}
                                 type="number"
-                                // value={formik.values.phone_no}
+                                // value="yy"
                                 onChange={formik.handleChange}
-                            // error={formik.touched.phone_no && Boolean(formik.errors.phone_no)}
-                            // helperText={formik.touched.phone_no && formik.errors.phone_no}
+                                error={formik.touched.lunch && Boolean(formik.errors.lunch)}
+                                helperText={formik.touched.lunch && formik.errors.lunch}
                             />
                         </div>
+
+
 
                         <div className="input-field">
                             <TextField
@@ -150,47 +201,16 @@ const MealDialog = ({
                                 autoComplete="dinner"
                                 type="number"
                                 disabled={processing}
-                                // value={formik.values.email}
+                                // value="xx"
                                 onChange={formik.handleChange}
-                                error={formik.touched.email && Boolean(formik.errors.email)}
-                                helperText={formik.touched.email && formik.errors.email}
+                                error={formik.touched.dinner && Boolean(formik.errors.dinner)}
+                                helperText={formik.touched.dinner && formik.errors.dinner}
                             />
                         </div>
                     </div>
-                    <MobileDateTimePicker
-                        label={t("calendar.form.selected_day.label")}
-                        inputFormat="dd/MM/yyyy"
-                        value={formik.values.selected_day}
-                        onChange={(date: Date | null) =>
-                            formik.setFieldValue("start", date)
-                        }
-                        renderInput={(params) => (
-                            <TextField
-                                {...params}
-                                id="start"
-                                disabled={processing}
-                                fullWidth
-                                margin="normal"
-                                name="start"
-                            />
-                        )}
-                    />
 
 
-                    <FormControl component="fieldset" margin="normal">
 
-                        <FormControlLabel
-                            name="is_active"
-                            disabled={processing}
-                            onChange={(e) => {
-                                formik.setFieldValue('is_active', !(e.target as HTMLInputElement).checked);
-                            }}
-                            checked={!formik.values.is_active} // Negate the value to invert the behavior
-                            control={<Checkbox />}
-                            label={t("userManagement.form.disabled.label")}
-                        />
-
-                    </FormControl>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={onClose}>{t("common.cancel")}</Button>

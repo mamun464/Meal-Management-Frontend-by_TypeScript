@@ -210,7 +210,8 @@
       "max": "Must be {{size}} characters or less",
       "min": "Must be {{size}} characters or more",
       "passwordMatch": "Password does not match",
-      "required": "Required"
+      "required": "Required",
+      "field_required": "Must be required {{field_name}} field"
     }
   },
   "dashboard": {
@@ -459,6 +460,7 @@
       }
     },
     "notifications": {
+      "mealAddSuccess": "{{user}}'s meal has been added!",
       "addSuccess": "{{user}} has been added!",
       "deleteSuccess": "User(s) have been deleted!",
       "updateSuccess": "{{user}} has been updated!"

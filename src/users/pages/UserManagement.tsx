@@ -11,6 +11,7 @@ import UserDialog from "../components/UserDialog";
 import MealDialog from "../components/MealDialog";
 import UserTable from "../components/UserTable";
 import { useAddUser } from "../hooks/useAddUser";
+import { useAddMeal } from "../hooks/useAddMeal";
 import { useDeleteUsers } from "../hooks/useDeleteUsers";
 import { useUpdateUser } from "../hooks/useUpdateUser";
 import { useUsers } from "../hooks/useUsers";
@@ -29,6 +30,7 @@ const UserManagement = () => {
   const [userUpdated, setUserUpdated] = useState<User | undefined>(undefined);
 
   const { addUser, isAdding } = useAddUser();
+  const { addMeal, isAddingMeal } = useAddMeal();
   const { deleteUsers, isDeleting } = useDeleteUsers();
   const { isUpdating, updateUser } = useUpdateUser();
   const { data } = useUsers();
@@ -37,7 +39,7 @@ const UserManagement = () => {
   // console.log("UserManagement: ", data);
 
 
-  const processing = isAdding || isDeleting || isUpdating;
+  const processing = isAdding || isDeleting || isUpdating || isAddingMeal;
 
 
   const handleAddUser = async (user: Partial<User>) => {
@@ -50,6 +52,25 @@ const UserManagement = () => {
           })
         );
         setOpenUserDialog(false);
+      })
+      .catch((error) => {
+        // Check if the error contains a specific message
+        const errorMessage = error.message || t("common.errors.unexpected.subTitle");
+
+        // Show error message using snackbar
+        snackbar.error(errorMessage);
+      });
+  };
+  const handleAddMeal = async (body: any) => {
+    console.log("handleAddMeal: ", body);
+    addMeal(body)
+      .then(() => {
+        snackbar.success(
+          t("userManagement.notifications.mealAddSuccess", {
+            user: `${body.name}`,
+          })
+        );
+        setOpenMealDialog(false);
       })
       .catch((error) => {
         // Check if the error contains a specific message
@@ -189,7 +210,7 @@ const UserManagement = () => {
         <MealDialog
           editMode={editMode}
           onClose={handleCloseMealDialog}
-          onUpdate={handleUpdateUser}
+          onMealAdd={handleAddMeal}
           open={openMealDialog}
           processing={processing}
           user={userUpdated}
