@@ -178,6 +178,7 @@
     "delete": "Delete",
     "edit": "Edit",
     "addMeal": "Meal Add",
+    "manageChange": "Make Manager",
     "errors": {
       "forbidden": {
         "subTitle": "You don't have access to view this page"
@@ -463,7 +464,8 @@
       "mealAddSuccess": "{{user}}'s meal has been added!",
       "addSuccess": "{{user}} has been added!",
       "deleteSuccess": "User(s) have been deleted!",
-      "updateSuccess": "{{user}} has been updated!"
+      "updateSuccess": "{{user}} has been updated!",
+      "makeManager": "{{user}} has assigned as a Manager!"
     },
     "table": {
       "headers": {

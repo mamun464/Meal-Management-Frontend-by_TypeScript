@@ -14,6 +14,7 @@ import { useAddUser } from "../hooks/useAddUser";
 import { useAddMeal } from "../hooks/useAddMeal";
 import { useDeleteUsers } from "../hooks/useDeleteUsers";
 import { useUpdateUser } from "../hooks/useUpdateUser";
+import { useChangeManager } from "../hooks/useChangeManager";
 import { useUsers } from "../hooks/useUsers";
 import { User } from "../types/user";
 
@@ -33,13 +34,14 @@ const UserManagement = () => {
   const { addMeal, isAddingMeal } = useAddMeal();
   const { deleteUsers, isDeleting } = useDeleteUsers();
   const { isUpdating, updateUser } = useUpdateUser();
+  const { isChanging, changeManager } = useChangeManager();
   const { data } = useUsers();
 
 
   // console.log("UserManagement: ", data);
 
 
-  const processing = isAdding || isDeleting || isUpdating || isAddingMeal;
+  const processing = isAdding || isDeleting || isUpdating || isAddingMeal || isChanging;
 
 
   const handleAddUser = async (user: Partial<User>) => {
@@ -105,6 +107,24 @@ const UserManagement = () => {
       .then(() => {
         snackbar.success(
           t("userManagement.notifications.updateSuccess", {
+            user: `${user.fullName}`,
+          })
+        );
+        setOpenUserDialog(false);
+      })
+      .catch((error) => {
+        // Display the specific error message from the thrown error
+        const errorMessage = error instanceof Error ? error.message : t("common.errors.unexpected.subTitle");
+        snackbar.error(errorMessage);
+      });
+  };
+  const handleChangeManagerShip = async (user: User) => {
+    // console.log("handleChangeManagerShip:", user);
+
+    changeManager(user)
+      .then(() => {
+        snackbar.success(
+          t("userManagement.notifications.makeManager", {
             user: `${user.fullName}`,
           })
         );
@@ -184,6 +204,7 @@ const UserManagement = () => {
         onDelete={handleOpenConfirmDeleteDialog}
         onEdit={handleOpenUserDialog}
         onAddMeal={handleOpenMealDialog}
+        onChangeManager={handleChangeManagerShip}
         onSelectedChange={handleSelectedChange}
         selected={selected}
         users={data}

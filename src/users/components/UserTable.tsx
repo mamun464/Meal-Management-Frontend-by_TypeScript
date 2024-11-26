@@ -23,7 +23,8 @@ import { useTranslation } from "react-i18next";
 import Empty from "../../core/components/Empty";
 import * as selectUtils from "../../core/utils/selectUtils";
 import { User } from "../types/user";
-import { MdFastfood } from "react-icons/md";
+import { MdFastfood, MdManageAccounts } from "react-icons/md";
+import LoadingButton from "@material-ui/lab/LoadingButton";
 
 interface HeadCell {
   id: string;
@@ -100,6 +101,7 @@ type UserRowProps = {
   onDelete: (userIds: string[]) => void;
   onEdit: (user: User) => void;
   onAddMeal: (user: User) => void;
+  onChangeManager: (user: User) => void;
   processing: boolean;
   selected: boolean;
   user: User;
@@ -111,6 +113,7 @@ const UserRow = ({
   onDelete,
   onEdit,
   onAddMeal,
+  onChangeManager,
   processing,
   selected,
   user,
@@ -147,6 +150,10 @@ const UserRow = ({
   const handleAddMeal = () => {
     handleCloseActions();
     onAddMeal(user);
+  };
+  const handleManagerShip = () => {
+    handleCloseActions();
+    onChangeManager(user);
   };
 
   return (
@@ -216,17 +223,38 @@ const UserRow = ({
         align="right"
         sx={{ borderTopRightRadius: "1rem", borderBottomRightRadius: "1rem" }}
       >
-        <IconButton
-          id="user-row-menu-button"
-          aria-label="user actions"
-          aria-controls="user-row-menu"
-          aria-haspopup="true"
-          aria-expanded={openActions ? "true" : "false"}
-          disabled={processing}
-          onClick={handleOpenActions}
+        <LoadingButton
+          loading={processing}
+          type="submit"
+          variant="contained"
+          size="small" // Make the button small
+          sx={{
+            backgroundColor: "transparent", // Transparent background
+            boxShadow: "none",             // Remove shadow
+            minWidth: 0,                   // Adjust padding for a compact button
+            padding: "4px",                // Fine-tune the padding for a smaller button
+            "&:hover": {
+              backgroundColor: "transparent", // Keep transparent on hover
+            },
+          }}
         >
-          <MoreVertIcon />
-        </IconButton>
+          {!processing && ( // Hide IconButton when processing
+            <IconButton
+              id="user-row-menu-button"
+              aria-label="user actions"
+              aria-controls="user-row-menu"
+              aria-haspopup="true"
+              aria-expanded={openActions ? "true" : "false"}
+              disabled={processing}
+              onClick={handleOpenActions}
+              size="small" // Small IconButton for consistency
+            >
+              <MoreVertIcon />
+            </IconButton>
+          )}
+        </LoadingButton>
+
+
         <Menu
           id="user-row-menu"
           anchorEl={anchorEl}
@@ -247,6 +275,12 @@ const UserRow = ({
               <MdFastfood size={22} />
             </ListItemIcon>{" "}
             {t("common.addMeal")}
+          </MenuItem>
+          <MenuItem onClick={handleManagerShip}>
+            <ListItemIcon>
+              <MdManageAccounts size={22} />
+            </ListItemIcon>{" "}
+            {t("common.manageChange")}
           </MenuItem>
 
           <MenuItem onClick={handleEdit}>
@@ -272,6 +306,7 @@ type UserTableProps = {
   onDelete: (userIds: string[]) => void;
   onEdit: (user: User) => void;
   onAddMeal: (user: User) => void;
+  onChangeManager: (user: User) => void;
   onSelectedChange: (selected: string[]) => void;
   selected: string[];
   users?: User[];
@@ -282,6 +317,7 @@ const UserTable = ({
   onEdit,
   onAddMeal,
   onSelectedChange,
+  onChangeManager,
   processing,
   selected,
   users = [],
@@ -347,6 +383,7 @@ const UserTable = ({
                   onDelete={onDelete}
                   onEdit={onEdit}
                   onAddMeal={onAddMeal}
+                  onChangeManager={onChangeManager}
                   processing={processing}
                   selected={isSelected(user.id.toString())}
                   user={user}
