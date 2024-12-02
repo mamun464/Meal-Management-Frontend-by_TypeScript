@@ -23,6 +23,12 @@ import { useTranslation } from "react-i18next";
 import Empty from "../../core/components/Empty";
 import * as selectUtils from "../../core/utils/selectUtils";
 import { User } from "../types/user";
+import { MdFastfood, MdManageAccounts } from "react-icons/md";
+import { BsFillEyeFill } from "react-icons/bs";
+import LoadingButton from "@material-ui/lab/LoadingButton";
+import { useNavigate } from 'react-router-dom';
+
+
 
 interface HeadCell {
   id: string;
@@ -39,7 +45,7 @@ const headCells: HeadCell[] = [
   {
     id: "gender",
     align: "center",
-    label: "userManagement.table.headers.gender",
+    label: "userManagement.table.headers.phone",
   },
   {
     id: "role",
@@ -69,7 +75,7 @@ function EnhancedTableHead({
   return (
     <TableHead>
       <TableRow sx={{ "& th": { border: 0 } }}>
-        <TableCell sx={{ py: 0 }}>
+        {/* <TableCell sx={{ py: 0 }}>
           <Checkbox
             color="primary"
             indeterminate={numSelected > 0 && numSelected < rowCount}
@@ -79,6 +85,17 @@ function EnhancedTableHead({
               "aria-label": "select all users",
             }}
           />
+        </TableCell> */}
+        <TableCell sx={{ py: 0 }}>
+          {/* <Checkbox
+            color="primary"
+            indeterminate={numSelected > 0 && numSelected < rowCount}
+            checked={rowCount > 0 && numSelected === rowCount}
+            onChange={onSelectAllClick}
+            inputProps={{
+              "aria-label": "select all users",
+            }}
+          /> */}
         </TableCell>
         {headCells.map((headCell) => (
           <TableCell key={headCell.id} align={headCell.align} sx={{ py: 0 }}>
@@ -98,6 +115,8 @@ type UserRowProps = {
   onCheck: (id: string) => void;
   onDelete: (userIds: string[]) => void;
   onEdit: (user: User) => void;
+  onAddMeal: (user: User) => void;
+  onChangeManager: (user: User) => void;
   processing: boolean;
   selected: boolean;
   user: User;
@@ -108,11 +127,14 @@ const UserRow = ({
   onCheck,
   onDelete,
   onEdit,
+  onAddMeal,
+  onChangeManager,
   processing,
   selected,
   user,
 }: UserRowProps) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const navigate = useNavigate();
   const { t } = useTranslation();
 
   const labelId = `enhanced-table-checkbox-${index}`;
@@ -126,14 +148,32 @@ const UserRow = ({
     setAnchorEl(null);
   };
 
+  const capitalize = (str: string): string => {
+    if (!str) return str; // Return the original string if it's empty or undefined
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  };
+
+
   const handleDelete = () => {
     handleCloseActions();
-    onDelete([user.id]);
+    onDelete([user.id.toString()]);
   };
 
   const handleEdit = () => {
     handleCloseActions();
     onEdit(user);
+  };
+  const handleAddMeal = () => {
+    handleCloseActions();
+    onAddMeal(user);
+  };
+  const handleManagerShip = () => {
+    handleCloseActions();
+    onChangeManager(user);
+  };
+
+  const handleViewProfile = () => {
+    navigate(`/member-profile/${user.id}`);
   };
 
   return (
@@ -154,17 +194,24 @@ const UserRow = ({
           inputProps={{
             "aria-labelledby": labelId,
           }}
-          onClick={() => onCheck(user.id)}
+          onClick={() => onCheck(user.id.toString())}
         />
       </TableCell>
       <TableCell>
         <Box sx={{ display: "flex", alignItems: "center" }}>
-          <Avatar sx={{ mr: 3 }}>
-            <PersonIcon />
+          <Avatar sx={{ mr: 3 }} src={user.user_profile_img || undefined}>
+            {!user.user_profile_img && (
+              <Typography variant="body1" sx={{ color: '#D91656' }}>
+                {user.fullName
+                  .split(" ")
+                  .map(name => name.charAt(0).toUpperCase())
+                  .join("")}
+              </Typography>
+            )}
           </Avatar>
           <Box>
             <Typography component="div" variant="h6">
-              {`${user.lastName} ${user.firstName}`}
+              {`${user.fullName}`}
             </Typography>
             <Typography color="textSecondary" variant="body2">
               {user.email}
@@ -172,10 +219,21 @@ const UserRow = ({
           </Box>
         </Box>
       </TableCell>
-      <TableCell align="center">{user.gender}</TableCell>
-      <TableCell align="center">{user.role}</TableCell>
+
+
+      <TableCell align="center">{user.phone_no}</TableCell>
       <TableCell align="center">
-        {user.disabled ? (
+        {user.role === "manager" ? (
+          <Chip
+            label="Manager"
+            style={{ backgroundColor: '#A594F9', color: '#fff' }} // Custom orange background with white text
+          />
+        ) : (
+          capitalize(user.role)
+        )}
+      </TableCell>
+      <TableCell align="center">
+        {!user.is_active ? (
           <Chip label="Disabled" />
         ) : (
           <Chip color="primary" label="Active" />
@@ -185,17 +243,38 @@ const UserRow = ({
         align="right"
         sx={{ borderTopRightRadius: "1rem", borderBottomRightRadius: "1rem" }}
       >
-        <IconButton
-          id="user-row-menu-button"
-          aria-label="user actions"
-          aria-controls="user-row-menu"
-          aria-haspopup="true"
-          aria-expanded={openActions ? "true" : "false"}
-          disabled={processing}
-          onClick={handleOpenActions}
+        <LoadingButton
+          loading={processing}
+          type="submit"
+          variant="contained"
+          size="small" // Make the button small
+          sx={{
+            backgroundColor: "transparent", // Transparent background
+            boxShadow: "none",             // Remove shadow
+            minWidth: 0,                   // Adjust padding for a compact button
+            padding: "4px",                // Fine-tune the padding for a smaller button
+            "&:hover": {
+              backgroundColor: "transparent", // Keep transparent on hover
+            },
+          }}
         >
-          <MoreVertIcon />
-        </IconButton>
+          {!processing && ( // Hide IconButton when processing
+            <IconButton
+              id="user-row-menu-button"
+              aria-label="user actions"
+              aria-controls="user-row-menu"
+              aria-haspopup="true"
+              aria-expanded={openActions ? "true" : "false"}
+              disabled={processing}
+              onClick={handleOpenActions}
+              size="small" // Small IconButton for consistency
+            >
+              <MoreVertIcon />
+            </IconButton>
+          )}
+        </LoadingButton>
+
+
         <Menu
           id="user-row-menu"
           anchorEl={anchorEl}
@@ -211,6 +290,24 @@ const UserRow = ({
             horizontal: "right",
           }}
         >
+          <MenuItem onClick={handleViewProfile}>
+            <ListItemIcon>
+              <BsFillEyeFill size={22} />
+            </ListItemIcon>{" "}
+            {t("common.viewProfile")}
+          </MenuItem>
+          <MenuItem onClick={handleAddMeal}>
+            <ListItemIcon>
+              <MdFastfood size={22} />
+            </ListItemIcon>{" "}
+            {t("common.addMeal")}
+          </MenuItem>
+          <MenuItem onClick={handleManagerShip}>
+            <ListItemIcon>
+              <MdManageAccounts size={22} />
+            </ListItemIcon>{" "}
+            {t("common.manageChange")}
+          </MenuItem>
           <MenuItem onClick={handleEdit}>
             <ListItemIcon>
               <EditIcon />
@@ -233,6 +330,8 @@ type UserTableProps = {
   processing: boolean;
   onDelete: (userIds: string[]) => void;
   onEdit: (user: User) => void;
+  onAddMeal: (user: User) => void;
+  onChangeManager: (user: User) => void;
   onSelectedChange: (selected: string[]) => void;
   selected: string[];
   users?: User[];
@@ -241,7 +340,9 @@ type UserTableProps = {
 const UserTable = ({
   onDelete,
   onEdit,
+  onAddMeal,
   onSelectedChange,
+  onChangeManager,
   processing,
   selected,
   users = [],
@@ -306,8 +407,10 @@ const UserTable = ({
                   onCheck={handleClick}
                   onDelete={onDelete}
                   onEdit={onEdit}
+                  onAddMeal={onAddMeal}
+                  onChangeManager={onChangeManager}
                   processing={processing}
-                  selected={isSelected(user.id)}
+                  selected={isSelected(user.id.toString())}
                   user={user}
                 />
               ))}

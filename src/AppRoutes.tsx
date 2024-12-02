@@ -9,9 +9,13 @@ const Faq = lazy(() => import("./admin/pages/Faq"));
 const HelpCenter = lazy(() => import("./admin/pages/HelpCenter"));
 const Home = lazy(() => import("./admin/pages/Home"));
 const Profile = lazy(() => import("./admin/pages/Profile"));
+const MemberProfile = lazy(() => import("./admin/pages/MemberProfile"));
 const ProfileActivity = lazy(() => import("./admin/pages/ProfileActivity"));
 const ProfileInformation = lazy(
   () => import("./admin/pages/ProfileInformation")
+);
+const MemberProfileInformation = lazy(
+  () => import("./admin/pages/MemberProfileInformation")
 );
 const ProfilePassword = lazy(() => import("./admin/pages/ProfilePassword"));
 
@@ -43,7 +47,7 @@ const AppRoutes = () => {
   return (
     <Routes basename={process.env.PUBLIC_URL}>
       {/* <Route path="/" element={<Landing />} /> */}
-      <PrivateRoute path="admin" element={<Admin />}>
+      <PrivateRoute path="/" element={<Admin />}>
         <PrivateRoute path="/" element={<Home />} />
         <PrivateRoute path="calendar" element={<CalendarApp />} />
         <PrivateRoute path="dashboard" element={<Dashboard />} />
@@ -53,6 +57,11 @@ const AppRoutes = () => {
           <PrivateRoute path="/" element={<ProfileActivity />} />
           <PrivateRoute path="information" element={<ProfileInformation />} />
           <PrivateRoute path="password" element={<ProfilePassword />} />
+        </PrivateRoute>
+        <PrivateRoute path="member-profile/:userId" element={<MemberProfile />}>
+          {/* <PrivateRoute path="/" element={<ProfileActivity />} /> */}
+          <PrivateRoute path="/" element={<MemberProfileInformation userData={null} processing={true} />} />
+          {/* <PrivateRoute path="password" element={<ProfilePassword />} /> */}
         </PrivateRoute>
         <PrivateRoute
           path="projects"

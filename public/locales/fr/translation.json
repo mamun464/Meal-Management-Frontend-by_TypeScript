@@ -107,7 +107,7 @@
         "email": {
           "label": "Adresse E-mail"
         },
-        "firstName": {
+        "name": {
           "label": "Prénom"
         },
         "gender": {
@@ -423,8 +423,8 @@
           "n": "NC"
         }
       },
-      "lastName": {
-        "label": "Nom"
+      "phone": {
+        "label": "Phone No."
       },
       "role": {
         "label": "Rôle"
@@ -449,6 +449,7 @@
       "headers": {
         "actions": "Actions",
         "gender": "Genre",
+        "phone": "Téléphone",
         "role": "Rôle",
         "status": "Statut",
         "user": "Utilisateur"

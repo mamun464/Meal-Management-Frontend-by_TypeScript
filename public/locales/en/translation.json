@@ -146,6 +146,9 @@
       "start": {
         "label": "Start Date"
       },
+      "selected_day": {
+        "label": "Date"
+      },
       "title": {
         "label": "Title"
       }
@@ -174,6 +177,9 @@
     "confirmation": "Confirmation",
     "delete": "Delete",
     "edit": "Edit",
+    "addMeal": "Meal Add",
+    "viewProfile": "View Profile",
+    "manageChange": "Make Manager",
     "errors": {
       "forbidden": {
         "subTitle": "You don't have access to view this page"
@@ -206,7 +212,8 @@
       "max": "Must be {{size}} characters or less",
       "min": "Must be {{size}} characters or more",
       "passwordMatch": "Password does not match",
-      "required": "Required"
+      "required": "Required",
+      "field_required": "Must be required {{field_name}} field"
     }
   },
   "dashboard": {
@@ -342,7 +349,8 @@
           "label": "Last Name"
         }
       },
-      "title": "Update profile"
+      "title": "Update profile",
+      "memberInfo": "Member Profile"
     },
     "menu": {
       "activity": "Activity",
@@ -412,8 +420,14 @@
       "email": {
         "label": "Email Address"
       },
-      "firstName": {
-        "label": "First Name"
+      "lunch": {
+        "label": "Lunch"
+      },
+      "dinner": {
+        "label": "Dinner"
+      },
+      "name": {
+        "label": "Name"
       },
       "gender": {
         "label": "Gender",
@@ -423,8 +437,8 @@
           "n": "NC"
         }
       },
-      "lastName": {
-        "label": "Last Name"
+      "phone": {
+        "label": "Phone No."
       },
       "role": {
         "label": "Role"
@@ -435,20 +449,31 @@
         "action": "Add",
         "title": "Add User"
       },
+      "meal_add": {
+        "action": "Enter",
+        "title": "Daily Meal Entry"
+      },
       "edit": {
         "action": "Edit",
         "title": "Edit User"
+      },
+      "meal_edit": {
+        "action": "Update",
+        "title": "User's Meal Update"
       }
     },
     "notifications": {
+      "mealAddSuccess": "{{user}}'s meal has been added!",
       "addSuccess": "{{user}} has been added!",
       "deleteSuccess": "User(s) have been deleted!",
-      "updateSuccess": "{{user}} has been updated!"
+      "updateSuccess": "{{user}} has been updated!",
+      "makeManager": "{{user}} has assigned as a Manager!"
     },
     "table": {
       "headers": {
         "actions": "Actions",
         "gender": "Gender",
+        "phone": "Phone",
         "role": "Role",
         "status": "Status",
         "user": "User"

@@ -14,7 +14,8 @@ const PrivateRoute = ({
 
   const isAdminOrManager = () => {
     if (userInfo) {
-      return userInfo.is_superuser || userInfo.is_manager;
+      return true
+      // userInfo.is_superuser || userInfo.is_manager;
     }
     return false;
   };

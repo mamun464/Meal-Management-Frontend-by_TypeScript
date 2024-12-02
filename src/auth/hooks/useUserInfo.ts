@@ -11,6 +11,7 @@ const fetchUserInfo = async (key?: string): Promise<UserInfo> => {
   const URL = `${process.env.REACT_APP_BACKEND_PUBLIC_URL}/api/user/profile/`;
 
   const response = await fetch(URL, {
+
     method: 'GET',
     headers: {
       'Accept': 'application/json',
@@ -20,6 +21,9 @@ const fetchUserInfo = async (key?: string): Promise<UserInfo> => {
   });
 
   if (!response.ok) {
+    if (response.status === 401) {
+      localStorage.clear(); // Clear local storage if unauthorized
+    }
     throw new Error(`Error: ${response.status}`); // Handle error response
   }
 

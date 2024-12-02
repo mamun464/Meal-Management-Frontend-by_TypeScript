@@ -4,6 +4,8 @@ import { useLogin, LoginResponse } from "../hooks/useLogin";
 import { useLogout } from "../hooks/useLogout";
 import { useUserInfo } from "../hooks/useUserInfo";
 import { UserInfo } from "../types/userInfo";
+import { useSnackbar } from "../../core/contexts/SnackbarProvider";
+import { useTranslation } from "react-i18next";
 
 interface AuthContextInterface {
   hasRole: (roles?: string[]) => {};
@@ -22,6 +24,8 @@ type AuthProviderProps = {
 
 const AuthProvider = ({ children }: AuthProviderProps) => {
   const [authKey, setAuthKey] = useLocalStorage<string>("authkey", "");
+  const snackbar = useSnackbar();
+  const { t } = useTranslation();
 
   const { isLoggingIn, login } = useLogin();
   const { isLoggingOut, logout } = useLogout();
@@ -56,20 +60,52 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
 
+
+  // const handleLogin = async (phone: string, password: string) => {
+  //   try {
+  //     const data: LoginResponse = await login({ phone, password });
+  //     console.log("After then: ", data);
+
+  //     if (data.success) {
+  //       setAuthKey(data.token.access); // Set the access token
+  //       console.log("Login successful:", data); // Log the entire data object
+  //       return data.token.access; // Return the modified data object
+  //     } else {
+  //       console.log("Login failed---------:", data);
+  //       throw new Error(data.message); // Throw an error with the response message
+  //     }
+  //   } catch (err: any) {
+  //     // Check if the error has a `message` property
+  //     const errorMessage = err.message || t("common.errors.unexpected.subTitle");
+  //     console.log("Login failed:", errorMessage); // Log the error message
+
+  //     // Show error message using snackbar
+  //     snackbar.error(errorMessage);
+  //     // throw new Error(errorMessage); // Throw the error with the message
+  //   }
+  // };
   const handleLogin = async (phone: string, password: string) => {
     return login({ phone, password })
       .then((data: LoginResponse) => {
+        console.log("After then: ", data);
+
         if (data.success) {
           setAuthKey(data.token.access); // Set the access token
           console.log("Login successful:", data); // Log the entire data object
           return data.token.access; // Return the modified data object
         } else {
+          console.log("Login failed:", data);
           throw new Error(data.message); // Handle unsuccessful login
         }
       })
       .catch((err) => {
-        console.error("Login failed:", err); // Handle errors
-        throw err;
+        // Check if the error has a `message` property
+        const errorMessage = err.message || t("common.errors.unexpected.subTitle");
+        console.log("Login failed:", errorMessage); // Log the error message
+
+        // Show error message using snackbar
+        snackbar.error(errorMessage);
+        // throw new Error(errorMessage); // Throw the error with the message
       });
   };
   // const handleLogin = async (email: string, password: string) => {

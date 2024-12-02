@@ -8,10 +8,13 @@ import ConfirmDialog from "../../core/components/ConfirmDialog";
 import SelectToolbar from "../../core/components/SelectToolbar";
 import { useSnackbar } from "../../core/contexts/SnackbarProvider";
 import UserDialog from "../components/UserDialog";
+import MealDialog from "../components/MealDialog";
 import UserTable from "../components/UserTable";
 import { useAddUser } from "../hooks/useAddUser";
+import { useAddMeal } from "../hooks/useAddMeal";
 import { useDeleteUsers } from "../hooks/useDeleteUsers";
 import { useUpdateUser } from "../hooks/useUpdateUser";
+import { useChangeManager } from "../hooks/useChangeManager";
 import { useUsers } from "../hooks/useUsers";
 import { User } from "../types/user";
 
@@ -21,29 +24,62 @@ const UserManagement = () => {
 
   const [openConfirmDeleteDialog, setOpenConfirmDeleteDialog] = useState(false);
   const [openUserDialog, setOpenUserDialog] = useState(false);
+  const [editMode, setEditMode] = useState(true);
+  const [openMealDialog, setOpenMealDialog] = useState(false);
   const [selected, setSelected] = useState<string[]>([]);
   const [userDeleted, setUserDeleted] = useState<string[]>([]);
   const [userUpdated, setUserUpdated] = useState<User | undefined>(undefined);
 
   const { addUser, isAdding } = useAddUser();
+  const { addMeal, isAddingMeal } = useAddMeal();
   const { deleteUsers, isDeleting } = useDeleteUsers();
   const { isUpdating, updateUser } = useUpdateUser();
+  const { isChanging, changeManager } = useChangeManager();
   const { data } = useUsers();
 
-  const processing = isAdding || isDeleting || isUpdating;
+
+  // console.log("UserManagement: ", data);
+
+
+  const processing = isAdding || isDeleting || isUpdating || isAddingMeal || isChanging;
+
 
   const handleAddUser = async (user: Partial<User>) => {
+
     addUser(user as User)
-      .then(() => {
+      .then((new_user) => {
         snackbar.success(
           t("userManagement.notifications.addSuccess", {
-            user: `${user.firstName} ${user.lastName}`,
+            user: `${new_user.fullName}`,
           })
         );
         setOpenUserDialog(false);
       })
-      .catch(() => {
-        snackbar.error(t("common.errors.unexpected.subTitle"));
+      .catch((error) => {
+        // Check if the error contains a specific message
+        const errorMessage = error.message || t("common.errors.unexpected.subTitle");
+
+        // Show error message using snackbar
+        snackbar.error(errorMessage);
+      });
+  };
+  const handleAddMeal = async (body: any) => {
+    console.log("handleAddMeal: ", body);
+    addMeal(body)
+      .then(() => {
+        snackbar.success(
+          t("userManagement.notifications.mealAddSuccess", {
+            user: `${body.name}`,
+          })
+        );
+        setOpenMealDialog(false);
+      })
+      .catch((error) => {
+        // Check if the error contains a specific message
+        const errorMessage = error.message || t("common.errors.unexpected.subTitle");
+
+        // Show error message using snackbar
+        snackbar.error(errorMessage);
       });
   };
 
@@ -55,23 +91,49 @@ const UserManagement = () => {
         setUserDeleted([]);
         setOpenConfirmDeleteDialog(false);
       })
-      .catch(() => {
-        snackbar.error(t("common.errors.unexpected.subTitle"));
+      .catch((error) => {
+        // Check if the error contains a specific message
+        const errorMessage = error.message || t("common.errors.unexpected.subTitle");
+
+        // Show error message using snackbar
+        snackbar.error(errorMessage);
       });
   };
 
   const handleUpdateUser = async (user: User) => {
+    // console.log("handleUpdateUser:", user);
+
     updateUser(user)
       .then(() => {
         snackbar.success(
           t("userManagement.notifications.updateSuccess", {
-            user: `${user.firstName} ${user.lastName}`,
+            user: `${user.fullName}`,
           })
         );
         setOpenUserDialog(false);
       })
-      .catch(() => {
-        snackbar.error(t("common.errors.unexpected.subTitle"));
+      .catch((error) => {
+        // Display the specific error message from the thrown error
+        const errorMessage = error instanceof Error ? error.message : t("common.errors.unexpected.subTitle");
+        snackbar.error(errorMessage);
+      });
+  };
+  const handleChangeManagerShip = async (user: User) => {
+    // console.log("handleChangeManagerShip:", user);
+
+    changeManager(user)
+      .then(() => {
+        snackbar.success(
+          t("userManagement.notifications.makeManager", {
+            user: `${user.fullName}`,
+          })
+        );
+        setOpenUserDialog(false);
+      })
+      .catch((error) => {
+        // Display the specific error message from the thrown error
+        const errorMessage = error instanceof Error ? error.message : t("common.errors.unexpected.subTitle");
+        snackbar.error(errorMessage);
       });
   };
 
@@ -87,6 +149,11 @@ const UserManagement = () => {
     setUserUpdated(undefined);
     setOpenUserDialog(false);
   };
+  const handleCloseMealDialog = () => {
+    setUserUpdated(undefined);
+    setOpenMealDialog(false);
+    setEditMode(true);
+  };
 
   const handleOpenConfirmDeleteDialog = (userIds: string[]) => {
     setUserDeleted(userIds);
@@ -96,6 +163,11 @@ const UserManagement = () => {
   const handleOpenUserDialog = (user?: User) => {
     setUserUpdated(user);
     setOpenUserDialog(true);
+  };
+  const handleOpenMealDialog = (user?: User) => {
+    setUserUpdated(user);
+    setOpenMealDialog(true);
+    setEditMode(false);
   };
 
   const handleSelectedChange = (newSelected: string[]) => {
@@ -124,12 +196,15 @@ const UserManagement = () => {
             onDelete={handleOpenConfirmDeleteDialog}
             selected={selected}
           />
-        )}
+        )
+        }
       </AdminAppBar>
       <UserTable
         processing={processing}
         onDelete={handleOpenConfirmDeleteDialog}
         onEdit={handleOpenUserDialog}
+        onAddMeal={handleOpenMealDialog}
+        onChangeManager={handleChangeManagerShip}
         onSelectedChange={handleSelectedChange}
         selected={selected}
         users={data}
@@ -152,6 +227,17 @@ const UserManagement = () => {
           user={userUpdated}
         />
       )}
+      {openMealDialog && (
+        <MealDialog
+          editMode={editMode}
+          onClose={handleCloseMealDialog}
+          onMealAdd={handleAddMeal}
+          open={openMealDialog}
+          processing={processing}
+          user={userUpdated}
+        />
+      )}
+
     </React.Fragment>
   );
 };
