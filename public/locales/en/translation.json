@@ -178,6 +178,7 @@
     "delete": "Delete",
     "edit": "Edit",
     "addMeal": "Meal Add",
+    "viewProfile": "View Profile",
     "manageChange": "Make Manager",
     "errors": {
       "forbidden": {
@@ -348,7 +349,8 @@
           "label": "Last Name"
         }
       },
-      "title": "Update profile"
+      "title": "Update profile",
+      "memberInfo": "Member Profile"
     },
     "menu": {
       "activity": "Activity",

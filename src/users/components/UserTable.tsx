@@ -24,7 +24,11 @@ import Empty from "../../core/components/Empty";
 import * as selectUtils from "../../core/utils/selectUtils";
 import { User } from "../types/user";
 import { MdFastfood, MdManageAccounts } from "react-icons/md";
+import { BsFillEyeFill } from "react-icons/bs";
 import LoadingButton from "@material-ui/lab/LoadingButton";
+import { useNavigate } from 'react-router-dom';
+
+
 
 interface HeadCell {
   id: string;
@@ -82,6 +86,17 @@ function EnhancedTableHead({
             }}
           />
         </TableCell> */}
+        <TableCell sx={{ py: 0 }}>
+          {/* <Checkbox
+            color="primary"
+            indeterminate={numSelected > 0 && numSelected < rowCount}
+            checked={rowCount > 0 && numSelected === rowCount}
+            onChange={onSelectAllClick}
+            inputProps={{
+              "aria-label": "select all users",
+            }}
+          /> */}
+        </TableCell>
         {headCells.map((headCell) => (
           <TableCell key={headCell.id} align={headCell.align} sx={{ py: 0 }}>
             {t(headCell.label)}
@@ -119,6 +134,7 @@ const UserRow = ({
   user,
 }: UserRowProps) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const navigate = useNavigate();
   const { t } = useTranslation();
 
   const labelId = `enhanced-table-checkbox-${index}`;
@@ -154,6 +170,10 @@ const UserRow = ({
   const handleManagerShip = () => {
     handleCloseActions();
     onChangeManager(user);
+  };
+
+  const handleViewProfile = () => {
+    navigate(`/member-profile/${user.id}`);
   };
 
   return (
@@ -270,6 +290,12 @@ const UserRow = ({
             horizontal: "right",
           }}
         >
+          <MenuItem onClick={handleViewProfile}>
+            <ListItemIcon>
+              <BsFillEyeFill size={22} />
+            </ListItemIcon>{" "}
+            {t("common.viewProfile")}
+          </MenuItem>
           <MenuItem onClick={handleAddMeal}>
             <ListItemIcon>
               <MdFastfood size={22} />
@@ -282,7 +308,6 @@ const UserRow = ({
             </ListItemIcon>{" "}
             {t("common.manageChange")}
           </MenuItem>
-
           <MenuItem onClick={handleEdit}>
             <ListItemIcon>
               <EditIcon />
